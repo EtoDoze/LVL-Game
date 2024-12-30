@@ -14,37 +14,35 @@ ranking = dados["rankingj"]
 
 # Função que será chamada quando o estado das checkboxes mudar
 def atualizar_exp():
-    global level, exp, ranking  # Informar ao Python que vamos usar as variáveis globais
+    global level, exp, ranking
     
-    # Verifica se alguma checkbox foi marcada e aumenta a experiência
+    # Verifica se alguma checkbox foi marcada
     if var1.get() or var2.get() or var3.get() or var4.get():
-        exp += 10  # Aumenta a experiência
-
-    # Atualiza os rótulos com os novos valores
-    label2.config(text=f"Level: {level}       XP: {exp}       Ranking: {ranking}")
-    
-    # Atualiza a barra de progresso
-    barra_progresso["value"] = exp  # Atualiza o valor da barra com a nova XP
+        exp += 10
 
     # Verifica se XP chegou a 100
     if exp >= 100:
-        exp = 0  # Resetar XP
-        level += 1  # Subir de nível
-        barra_progresso["value"] = exp  # Resetar a barra de progresso
-        ranking = functions.rank(level)  # Atualiza o ranking com o novo nível
-        dados["levelj"] = level
-        dados["expj"] = exp
-        dados["rankingj"] = ranking
+        exp = 0
+        level += 1
+        ranking = functions.rank(level)
+        messagebox.showinfo("Parabéns!", f"Você subiu para o nível {level}!")  # Mensagem de nível
 
-        # Atualiza o arquivo JSON com os novos dados
+    # Atualiza os dados no dicionário
+    dados["levelj"] = level
+    dados["expj"] = exp
+    dados["rankingj"] = ranking
+
+    # Atualiza a barra de progresso e os rótulos
+    barra_progresso["value"] = exp
+    label2.config(text=f"Level: {level}       XP: {exp}       Ranking: {ranking}")
+
+    # Salva os dados no arquivo JSON
+    try:
         with open("banco.json", 'w') as bancoW:
             json.dump(dados, bancoW, indent=4)
+    except Exception as e:
+        print(f"Erro ao salvar os dados no arquivo: {e}")
 
-        # Exibir a mensagem de "level up"
-        messagebox.showinfo("Parabéns!", f"Você subiu para o nível {level}!")  # Exibir a mensagem de parabéns
-
-    # Atualiza o rótulo com os dados mais recentes
-    label2.config(text=f"Level: {level}       XP: {exp}       Ranking: {ranking}")
 
 # Criar a janela principal
 janela = tk.Tk()
